@@ -5,9 +5,12 @@ import { useState } from "react";
 
 const CartPage = () => {
   const [nickname, setNickname] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCVV, setCardCVV] = useState("");
   
   const handlePayment = () => {
-    // Перенаправление на сервер оплаты
+    // Перенаправление на сервер SAMP после ввода данных карты
     window.location.href = `http://188.127.241.74:3895/payment?nickname=${nickname}`;
   };
 
@@ -67,35 +70,51 @@ const CartPage = () => {
               
               <div className="bg-black/50 rounded-xl p-6 shadow-md mb-8">
                 <h2 className="text-2xl font-bold text-white mb-4">
-                  Способ оплаты
+                  Данные карты
                 </h2>
                 <div className="space-y-4">
-                  <div className="bg-gray-800/50 p-4 rounded-lg flex items-center space-x-3 cursor-pointer">
-                    <input type="radio" id="card" name="payment" className="w-4 h-4" defaultChecked />
-                    <label htmlFor="card" className="flex-1 cursor-pointer">
-                      <span className="font-medium">Банковская карта</span>
-                    </label>
+                  <div className="space-y-2">
+                    <label htmlFor="cardNumber" className="text-gray-300">Номер карты</label>
+                    <Input
+                      id="cardNumber"
+                      placeholder="XXXX XXXX XXXX XXXX"
+                      className="bg-gray-800 border-gray-700 text-white"
+                      value={cardNumber}
+                      onChange={(e) => setCardNumber(e.target.value)}
+                    />
                   </div>
-                  <div className="bg-gray-800/50 p-4 rounded-lg flex items-center space-x-3 cursor-pointer">
-                    <input type="radio" id="qiwi" name="payment" className="w-4 h-4" />
-                    <label htmlFor="qiwi" className="flex-1 cursor-pointer">
-                      <span className="font-medium">QIWI Кошелек</span>
-                    </label>
-                  </div>
-                  <div className="bg-gray-800/50 p-4 rounded-lg flex items-center space-x-3 cursor-pointer">
-                    <input type="radio" id="webmoney" name="payment" className="w-4 h-4" />
-                    <label htmlFor="webmoney" className="flex-1 cursor-pointer">
-                      <span className="font-medium">WebMoney</span>
-                    </label>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label htmlFor="cardExpiry" className="text-gray-300">Срок действия</label>
+                      <Input
+                        id="cardExpiry"
+                        placeholder="ММ/ГГ"
+                        className="bg-gray-800 border-gray-700 text-white"
+                        value={cardExpiry}
+                        onChange={(e) => setCardExpiry(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="cardCVV" className="text-gray-300">CVV код</label>
+                      <Input
+                        id="cardCVV"
+                        placeholder="XXX"
+                        type="password"
+                        className="bg-gray-800 border-gray-700 text-white"
+                        value={cardCVV}
+                        onChange={(e) => setCardCVV(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
               
               <div className="text-center">
                 <Button 
-                  className="bg-red-600 hover:bg-red-700 rounded-md px-8 py-6 h-auto w-full max-w-md"
+                  className="bg-red-600 hover:bg-red-700 rounded-md px-8 py-6 h-auto w-full max-w-md animate-pulse"
                   onClick={handlePayment}
-                  disabled={!nickname}
+                  disabled={!nickname || !cardNumber || !cardExpiry || !cardCVV}
                 >
                   <span className="text-base">Перейти к оплате</span>
                 </Button>
