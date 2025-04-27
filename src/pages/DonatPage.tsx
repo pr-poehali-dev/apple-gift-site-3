@@ -1,97 +1,57 @@
-import NavBar from "@/components/NavBar";
 import AdminCard from "@/components/AdminCard";
-import { toast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
+import NavBar from "@/components/NavBar";
+
+const ADMIN_LEVELS = [
+  { id: 1, level: 1, price: 142, description: "Базовый уровень администратора" },
+  { id: 2, level: 2, price: 212, description: "Расширенные возможности модерации" },
+  { id: 3, level: 3, price: 364, description: "Продвинутые команды управления" },
+  { id: 4, level: 4, price: 399, description: "Высокий уровень доступа" },
+  { id: 5, level: 5, price: 431, description: "Управление игровыми событиями" },
+  { id: 6, level: 6, price: 532, description: "Продвинутые возможности сервера" },
+  { id: 7, level: 8, price: 581, description: "Расширенные права администрирования" },
+  { id: 8, level: 9, price: 600, description: "Высокие привилегии админа" },
+  { id: 9, level: 10, price: 782, description: "Максимальные возможности модерации" },
+  { id: 10, level: 11, price: 972, description: "Элитный уровень доступа" },
+  { id: 11, level: 12, price: 1212, description: "Премиум возможности сервера" },
+  { id: 12, level: 13, price: 1423, description: "Основатель сервера" },
+  { id: 13, level: 14, price: 3023, description: "Владелец сервера" },
+];
 
 const DonatPage = () => {
-  const navigate = useNavigate();
-
-  const handleBuy = (level: number, price: number) => {
-    toast({
-      title: "Привилегия добавлена в корзину",
-      description: `Админ ${level} LVL (${price}₽) добавлен в вашу корзину`,
-    });
-    
-    // Перенаправление в корзину после добавления товара
-    setTimeout(() => {
-      navigate('/cart');
-    }, 1000);
-  };
-
-  const adminLevels = [
-    { level: 1, price: 142 },
-    { level: 2, price: 212 },
-    { level: 3, price: 364 },
-    { level: 4, price: 399 },
-    { level: 5, price: 431 },
-    { level: 6, price: 532 },
-    { level: 8, price: 581 },
-    { level: 9, price: 600 },
-    { level: 10, price: 782 },
-    { level: 11, price: 972 },
-    { level: 12, price: 1212 },
-    { level: 0, price: 1423, title: "Основатель" },
-    { level: 0, price: 3023, title: "Владелец Сервера" }
-  ];
-
   return (
     <>
       <NavBar />
-      <main className="pt-12 min-h-screen bg-gradient-to-b from-black to-gray-900">
-        <section className="min-h-screen py-16">
+      <main className="pt-12 min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
+        <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-16 pt-8">
-              <h1 className="text-4xl font-bold text-red-600 mb-4">
-                Выберите привилегию
-              </h1>
-              <p className="text-gray-300 text-lg">
-                Разные уровни привилегий с разными возможностями на сервере
-              </p>
+            <h1 className="text-4xl font-bold text-red-600 mb-2 text-center">
+              ДОНАТ ПРИВИЛЕГИИ
+            </h1>
+            <p className="text-gray-400 mb-12 text-center max-w-2xl mx-auto">
+              Выберите подходящий уровень администратора и получите доступ к управлению сервером SAMP.
+              Все привилегии выдаются моментально после успешной оплаты.
+            </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {ADMIN_LEVELS.map((admin) => (
+                <AdminCard 
+                  key={admin.id}
+                  id={admin.id}
+                  level={admin.level}
+                  price={admin.price}
+                  description={admin.description}
+                />
+              ))}
             </div>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {adminLevels.map((admin, index) => 
-                admin.level > 0 ? (
-                  <AdminCard 
-                    key={index}
-                    level={admin.level} 
-                    price={admin.price} 
-                    onClick={() => handleBuy(admin.level, admin.price)} 
-                  />
-                ) : (
-                  <div key={index} className="flex flex-col bg-gradient-to-b from-red-900 to-black/80 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-                    <div className="flex items-center justify-center h-40 p-4">
-                      <div className="relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="80" height="80">
-                          <linearGradient id="vipGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#FFD700" />
-                            <stop offset="100%" stopColor="#FFA500" />
-                          </linearGradient>
-                          <path d="M64,16 L8,48 L8,96 L64,128 L120,96 L120,48 L64,16 Z" fill="url(#vipGradient)" />
-                          <path d="M64,40 L40,55 L40,85 L64,100 L88,85 L88,55 L64,40 Z" fill="#000" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="p-4 flex flex-col gap-2">
-                      <h3 className="text-lg font-bold text-white">
-                        {admin.title}
-                      </h3>
-                      <p className="text-sm text-gray-300">
-                        Максимальные возможности и статус на сервере
-                      </p>
-                      <div className="text-yellow-500 font-bold text-xl mt-1">
-                        {new Intl.NumberFormat('ru-RU').format(admin.price)}₽
-                      </div>
-                      <button 
-                        className="mt-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded"
-                        onClick={() => handleBuy(0, admin.price)}
-                      >
-                        Купить
-                      </button>
-                    </div>
-                  </div>
-                )
-              )}
+            
+            <div className="mt-16 bg-black/30 p-6 rounded-lg max-w-3xl mx-auto border border-gray-800">
+              <h2 className="text-2xl font-bold mb-4 text-red-500">Информация о донате</h2>
+              <div className="space-y-3 text-gray-300">
+                <p>• Все привилегии выдаются <span className="text-white font-semibold">навсегда</span>.</p>
+                <p>• Активация происходит <span className="text-white font-semibold">автоматически</span> после оплаты.</p>
+                <p>• Для получения привилегии важно указать <span className="text-white font-semibold">точный никнейм</span>.</p>
+                <p>• По всем вопросам обращайтесь к администрации сервера.</p>
+              </div>
             </div>
           </div>
         </section>

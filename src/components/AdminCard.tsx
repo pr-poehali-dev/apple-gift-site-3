@@ -1,46 +1,79 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface AdminCardProps {
+  id: number;
   level: number;
   price: number;
-  onClick?: () => void;
+  description: string;
 }
 
-const AdminCard = ({ level, price, onClick }: AdminCardProps) => {
-  const formattedPrice = new Intl.NumberFormat('ru-RU').format(price);
-  
+const AdminCard = ({ id, level, price, description }: AdminCardProps) => {
+  const navigate = useNavigate();
+
+  const addToCart = () => {
+    try {
+      // Получаем текущую корзину из localStorage
+      const existingCartString = localStorage.getItem("cart");
+      let cart = existingCartString ? JSON.parse(existingCartString) : [];
+      
+      // Проверяем, есть ли уже такой товар в корзине
+      const existingItemIndex = cart.findIndex((item: any) => item.id === id);
+      
+      if (existingItemIndex >= 0) {
+        // Если товар уже в корзине, увеличиваем количество
+        cart[existingItemIndex].quantity += 1;
+      } else {
+        // Если товара нет в корзине, добавляем его
+        cart.push({
+          id,
+          name: `Админ ${level} LVL`,
+          description: description || "Привилегия администратора",
+          price,
+          quantity: 1
+        });
+      }
+      
+      // Сохраняем обновленную корзину
+      localStorage.setItem("cart", JSON.stringify(cart));
+      
+      // Переходим на страницу корзины
+      navigate("/cart");
+    } catch (e) {
+      console.error("Ошибка при добавлении в корзину:", e);
+    }
+  };
+
   return (
-    <div className="flex flex-col bg-black/80 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-      <div className="flex items-center justify-center h-40 p-4 bg-gradient-to-b from-red-900/40 to-black/40">
-        <div className="relative">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="80" height="80">
-            <linearGradient id="adminGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FF0000" />
-              <stop offset="100%" stopColor="#FF5E5E" />
-            </linearGradient>
-            <path d="M64,16 L8,48 L8,96 L64,128 L120,96 L120,48 L64,16 Z" fill="url(#adminGradient)" />
-            <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="40" fontWeight="bold">{level}</text>
-          </svg>
-        </div>
-      </div>
-      <div className="p-4 flex flex-col gap-2">
-        <h3 className="text-lg font-medium text-white">
-          Админ {level} LVL
-        </h3>
-        <p className="text-sm text-gray-400">
-          Получите доступ к админ-командам и возможностям
-        </p>
-        <div className="text-red-500 font-bold text-xl mt-1">
-          {formattedPrice}₽
-        </div>
+    <Card className="bg-black/70 border border-gray-800 hover:border-red-500/50 transition-all duration-300 overflow-hidden relative">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-2xl text-white">Админ {level} LVL</CardTitle>
+        <CardDescription className="text-gray-400">{description || "Привилегия администратора"}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="text-3xl font-bold text-red-500 mb-2">{price}₽</div>
+        <ul className="text-gray-300 text-sm space-y-1">
+          <li>✓ Базовые команды</li>
+          <li>✓ Модерация чата</li>
+          {level >= 3 && <li>✓ Управление игроками</li>}
+          {level >= 5 && <li>✓ Редактирование мира</li>}
+          {level >= 8 && <li>✓ Расширенные права</li>}
+          {level >= 10 && <li>✓ VIP привилегии</li>}
+        </ul>
+      </CardContent>
+      <CardFooter>
         <Button 
-          className="mt-2 bg-red-600 hover:bg-red-700 text-white font-medium"
-          onClick={onClick}
+          className="w-full bg-red-600 hover:bg-red-700 text-white"
+          onClick={addToCart}
         >
-          Купить
+          Купить сейчас
         </Button>
-      </div>
-    </div>
+      </CardFooter>
+      
+      {/* Декоративный элемент */}
+      <div className="absolute -right-6 -top-6 w-16 h-16 bg-red-500/20 rounded-full blur-xl"></div>
+    </Card>
   );
 };
 
